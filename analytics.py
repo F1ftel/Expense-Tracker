@@ -78,7 +78,7 @@ class ExpenseAnalytics:
         if df.empty: # ja izdevumu nav, atgriez tuksu Series
             return pd.Series(dtype=float)
 
-        return ( # grupe datus pa menesiem (izmantojot 'to_period("M")', lai iegutu menesa periodus) un summejiet katra mēneša izdevumus
+        return ( # grupe datus pa menesiem (izmantojot 'to_period("M")', lai iegutu menesa periodus) un summejiet katra menesa izdevumus
             df.groupby(df["date"].dt.to_period("M"))["amount"]
             .sum()
             .sort_index() # karto pec perioda indeksa (kas ir menesis)
