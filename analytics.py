@@ -1,17 +1,17 @@
 # analytics.py
 # Performs data analysis on expenses using Pandas and NumPy
 
-import pandas as pd
-import numpy as np
-from tracker import ExpenseTracker
+import pandas as pd # datu manipulesanai un darbam ar DataFrame
+import numpy as np # skaitliskam darbibam
+from tracker import ExpenseTracker # mijiedarbibai ar izdevumu datiem
 
-class ExpenseAnalytics:
+class ExpenseAnalytics: # analitiskas darbibas ar izdevumiem
     """
-    Provides analytical operations on expense data.
+    Provides analytical operations on expense data
     """
 
-    def __init__(self, tracker: ExpenseTracker):
-        self.tracker = tracker
+    def __init__(self, tracker: ExpenseTracker): # lai mijiedarbotos ar izdevumu datiem
+        self.tracker = tracker # Saglabāt ExpenseTracker instanci izmantošanai šajā klasē
 
     def _get_dataframe(self) -> pd.DataFrame:
         """
