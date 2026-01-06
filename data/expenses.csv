@@ -1,1 +1,30 @@
 id,date,category,amount,description
+1,2025-12-15,Transport,500.0,Monthly train pass
+2,2025-12-10,Food,45.5,Dinner at Italian restaurant
+3,2025-12-05,Shopping,299.99,New winter jacket
+4,2025-11-28,Bills,89.99,Internet bill
+5,2025-11-20,Entertainment,14.99,Netflix subscription
+6,2025-11-15,Healthcare,75.0,Gym membership
+7,2025-11-10,Food,8.5,Coffee with colleagues
+8,2025-11-05,Transport,65.3,Car fuel
+9,2025-10-30,Education,199.0,Python course
+10,2025-10-25,Shopping,599.0,New smartphone
+11,2025-10-20,Food,120.75,Weekly groceries
+12,2025-10-15,Entertainment,60.0,Cinema tickets
+13,2025-10-10,Bills,150.0,Electricity bill
+14,2025-10-05,Transport,15.0,Bus tickets
+15,2025-09-28,Food,35.25,Lunch meeting
+16,2025-09-20,Healthcare,29.99,Vitamins
+17,2025-09-15,Shopping,89.5,Books
+18,2025-09-10,Other,25.0,Charity donation
+19,2025-09-05,Food,18.99,Food delivery
+20,2025-08-28,Transport,120.0,Car service
+21,2025-08-20,Entertainment,45.0,Concert ticket
+22,2025-08-15,Bills,49.99,Phone bill
+23,2025-08-10,Food,65.8,Restaurant dinner
+24,2025-08-05,Education,79.0,Online workshop
+25,2025-07-28,Shopping,250.0,New shoes
+26,2025-07-20,Transport,80.5,Taxi rides
+27,2025-07-15,Food,22.3,Takeaway pizza
+28,2025-07-10,Healthcare,120.0,Dentist
+29,2025-07-05,Entertainment,19.99,Music streaming
