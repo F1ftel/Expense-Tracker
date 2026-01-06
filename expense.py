@@ -1,5 +1,6 @@
 # expense.py
 # Defines the Expense data model
+# Maksims Selkovskis ms24100, Raimonds Silinevics rs24085
 
 from datetime import datetime
 

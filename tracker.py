@@ -1,5 +1,6 @@
 # tracker.py
 # Manages expense storage, loading, and saving
+# Maksims Selkovskis ms24100, Raimonds Silinevics rs24085
 
 import os
 import pandas as pd

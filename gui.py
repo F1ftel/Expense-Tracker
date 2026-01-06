@@ -1,5 +1,6 @@
 # gui.py
 # Expense Tracker - Simple GUI Application
+# Maksims Selkovskis ms24100, Raimonds Silinevics rs24085
 
 import customtkinter as ctk
 from datetime import datetime
