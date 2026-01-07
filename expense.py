@@ -20,6 +20,7 @@ class Expense:
         """
         Validates date format YYYY-MM-DD.
         """
+
         try:
             datetime.strptime(date_str, "%Y-%m-%d")
             return date_str
@@ -31,8 +32,10 @@ class Expense:
         """
         Validates that the amount is positive.
         """
+
         if amount <= 0:
             raise ValueError("Expense amount must be positive.")
+
         return float(amount)
 
     @staticmethod
@@ -40,15 +43,19 @@ class Expense:
         """
         Validates category string.
         """
+
         category = category.strip()
+
         if not category:
             raise ValueError("Category cannot be empty.")
+
         return category
 
     def to_dict(self) -> dict:
         """
         Converts the expense to a dictionary for Pandas/DataFrame usage.
         """
+
         return {
             "date": self.date,
             "category": self.category,
