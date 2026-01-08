@@ -1,192 +1,207 @@
 # gui.py
-# Expense Tracker - Simple GUI Application
+# Expense Tracker - vienkarsa GUI lietojumprogramma
 # Maksims Selkovskis ms24100, Raimonds Silinevics rs24085
 
-import customtkinter as ctk
-from datetime import datetime
-from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg
+import customtkinter as ctk # lai izveidotu modernu grafisko lietotaja saskarni
+from datetime import datetime # darbam ar datumiem (noklusejuma datums, validacija)
+from matplotlib.backends.backend_tkagg import FigureCanvasTkAgg # diagrammu iegulsanai Tkinter GUI
 from matplotlib.figure import Figure
-import pandas as pd
+import pandas as pd # datu apstradei
 
+# importe projekta modulus
 from tracker import ExpenseTracker
 from analytics import ExpenseAnalytics
 
 class ExpenseTrackerGUI:
-    CATEGORIES = ["Food", "Transport", "Entertainment", "Shopping", "Bills", "Healthcare", "Education", "Travel", "Other"]
+    CATEGORIES = ["Food", "Transport", "Entertainment", "Shopping", "Bills", "Healthcare", "Education", "Travel", "Other"] # ieprieks definets izdevumu kategoriju saraksts
 
-    def __init__(self):
-        ctk.set_appearance_mode("light")
-        self.tracker = ExpenseTracker("data/expenses.csv")
-        self.analytics = ExpenseAnalytics(self.tracker)
+    def __init__(self): # inicialize GUI lietojumprogrammu
+        ctk.set_appearance_mode("light") # iestata gaisu temu CustomTkinter
+        self.tracker = ExpenseTracker("data/expenses.csv") # izveido ExpenseTracker instanci (apstrada datu glabasanu)
+        self.analytics = ExpenseAnalytics(self.tracker) # izveido analitikas paligobjektu
 
-        self.root = ctk.CTk()
-        self.root.title("Expense Tracker")
+        self.root = ctk.CTk() # izveido galveno lietojumprogrammas logu
+        self.root.title("Expense Tracker") # iestata loga nosaukumu
 
-        self.root.state('zoomed')
+        self.root.state('zoomed') # atver logu maksimizeta veida
 
-        self._build_ui()
+        self._build_ui() # izveido visus lietotaja interfeisa elementus
 
-    def _build_ui(self):
-        # Header
+    def _build_ui(self): # izveido lietojumprogrammas galveno izkartojumu
+        # header
         header = ctk.CTkFrame(self.root, fg_color="white")
         header.pack(fill="x", padx=10, pady=10)
 
-        ctk.CTkLabel(header, text="Expense Tracker", font=ctk.CTkFont(size=28, weight="bold")).pack(side="left", padx=20)
-        ctk.CTkButton(header, text="Add Expense", command=self._add_expense, fg_color="#2ecc71", hover_color="#27ae60", width=150, height=35).pack(side="right", padx=20)
+        ctk.CTkLabel(header, text="Expense Tracker", font=ctk.CTkFont(size=28, weight="bold")).pack(side="left", padx=20) # lietotnes title label
+        ctk.CTkButton(header, text="Add Expense", command=self._add_expense, fg_color="#2ecc71", hover_color="#27ae60", width=150, height=35).pack(side="right", padx=20) # poga Add Expense
 
-        # Tabs
+        # cilnes skats parslegsanai starp ekraniem
         tabs = ctk.CTkTabview(self.root, fg_color="white")
         tabs.pack(fill="both", expand=True, padx=10, pady=10)
 
+        # izveidot cilnes
         self.expenses_tab = tabs.add("All Expenses")
         self.analytics_tab = tabs.add("Analytics")
 
+        # izveidot atseviskas cilnes
         self._setup_expenses_tab()
         self._setup_analytics_tab()
 
-    def _setup_expenses_tab(self):
+    def _setup_expenses_tab(self): # izveido cilni "All Expenses"
+        # galvenais konteiners
         container = ctk.CTkFrame(self.expenses_tab, fg_color="white")
         container.pack(fill="both", expand=True, padx=50, pady=20)
 
-        # Header
+        # sadalas header
         header = ctk.CTkFrame(container, fg_color="white")
         header.pack(fill="x", pady=(0, 10))
         ctk.CTkLabel(header, text="All Expenses", font=ctk.CTkFont(size=24, weight="bold")).pack(side="left", padx=10)
 
-        # Table
+        # tabulas konteiners
         table_frame = ctk.CTkFrame(container, fg_color="white")
         table_frame.pack(fill="both", expand=True)
 
-        # Table header
-        self._create_table_header(table_frame)
+        self._create_table_header(table_frame) # izveido tabulas header rindu
 
-        # Scrollable content
+        # scrollable apgabals izdevumu rindam
         self.expenses_scroll = ctk.CTkScrollableFrame(table_frame, fg_color="white")
         self.expenses_scroll.pack(fill="both", expand=True)
-        self._refresh_expenses()
 
-    def _create_table_header(self, parent):
+        self._refresh_expenses() # ieladet izdevumus tabula
+
+    def _create_table_header(self, parent): # izveido kolonnu header izdevumu tabulai
         header_row = ctk.CTkFrame(parent, fg_color="#f0f0f0", height=40)
         header_row.pack(fill="x")
         header_row.pack_propagate(False)
 
-        for text, width in [("Date", 150), ("Category", 150), ("Amount", 120), ("Description", 300)]:
+        for text, width in [("Date", 150), ("Category", 150), ("Amount", 120), ("Description", 300)]: # define kolonnu nosaukumus un platumus
             ctk.CTkLabel(header_row, text=text, width=width, font=ctk.CTkFont(size=12, weight="bold"), anchor="w").pack(side="left", padx=20)
 
-        ctk.CTkLabel(header_row, text="Actions", width=100, font=ctk.CTkFont(size=12, weight="bold"), anchor="w").pack(side="right", padx=20)
+        ctk.CTkLabel(header_row, text="Actions", width=100, font=ctk.CTkFont(size=12, weight="bold"), anchor="w").pack(side="right", padx=20) # darbibu kolonna
 
-    def _refresh_expenses(self):
-        for widget in self.expenses_scroll.winfo_children():
+    def _refresh_expenses(self): # atsvaidzina izdevumu saraksta UI
+        for widget in self.expenses_scroll.winfo_children(): # notira ieprieksejas rindas
             widget.destroy()
 
-        expenses = self.tracker.get_all_expenses()
-        if expenses.empty:
+        expenses = self.tracker.get_all_expenses() # ielade izdevumus
+
+        if expenses.empty: # rada zinojumu, ja datu nav
             ctk.CTkLabel(self.expenses_scroll, text="No expenses. Add your first expense!", text_color="gray", font=ctk.CTkFont(size=14)).pack(pady=30)
             return
 
-        expenses = expenses.sort_values("date", ascending=False).reset_index(drop=True)
+        expenses = expenses.sort_values("date", ascending=False).reset_index(drop=True) # karto izdevumus pec datuma (vispirms jaunakie)
 
-        for _, row in expenses.iterrows():
+        for _, row in expenses.iterrows(): # izveido UI rindu katram izdevumam
             self._create_expense_row(row)
 
-    def _create_expense_row(self, row):
+    def _create_expense_row(self, row): # izveido viena izdevumu rinda
+        # rindu konteiners
         row_frame = ctk.CTkFrame(self.expenses_scroll, fg_color="white", height=45)
         row_frame.pack(fill="x", pady=1)
         row_frame.pack_propagate(False)
 
-        date_str = row["date"].strftime("%Y-%m-%d") if pd.notna(row["date"]) else ""
-        amount_str = f"{row['amount']:.2f} EUR"
-        desc = row["description"] if pd.notna(row["description"]) and row["description"] else "-"
+        date_str = row["date"].strftime("%Y-%m-%d") if pd.notna(row["date"]) else "" # datuma formatesana
+        amount_str = f"{row['amount']:.2f} EUR" # summas formatesana
+        desc = row["description"] if pd.notna(row["description"]) and row["description"] else "-"  # apraksta rezerves variants
 
-        # Truncate description if too long
-        if len(desc) > 50:
+        if len(desc) > 50: # garo aprakstu saisinasana
             desc = desc[:47] + "..."
 
-        for text, width in [(date_str, 150), (row["category"], 150), (amount_str, 120), (desc, 300)]:
+        for text, width in [(date_str, 150), (row["category"], 150), (amount_str, 120), (desc, 300)]: # izveido tabulas sunas
             ctk.CTkLabel(row_frame, text=text, width=width, anchor="w", font=ctk.CTkFont(size=12)).pack(side="left", padx=20)
 
-        # Check if ID exists (not None), don't use truthiness check since ID can be 0
-        if "id" in row and pd.notna(row["id"]):
+        if "id" in row and pd.notna(row["id"]): # pievieno dzesanas pogu, ja ID pastav
             expense_id = int(row["id"])
             ctk.CTkButton(row_frame, text="Delete", command=lambda eid=expense_id: self._delete_expense(eid), fg_color="#e74c3c", hover_color="#c0392b", width=100, height=32, font=ctk.CTkFont(size=11)).pack(side="right", padx=20)
 
-    def _delete_expense(self, expense_id):
+    def _delete_expense(self, expense_id): # dzes izdevumu un atsvaidzina UI
         if self.tracker.delete_expense(expense_id):
             self._refresh_expenses()
             self._refresh_analytics()
 
-    def _add_expense(self):
+    def _add_expense(self): # atver Add Expense dialoglodzinu
+        # izveido modalo dialoglodzinu
         dialog = ctk.CTkToplevel(self.root)
         dialog.title("Add Expense")
         dialog.geometry("500x550")
         dialog.transient(self.root)
         dialog.grab_set()
 
-        # Center dialog
+        # centre dialoglodzinu
         dialog.update_idletasks()
         x = (dialog.winfo_screenwidth() // 2) - 250
         y = (dialog.winfo_screenheight() // 2) - 275
         dialog.geometry(f"500x550+{x}+{y}")
 
+        # formas konteiners
         form = ctk.CTkFrame(dialog, fg_color="white")
         form.pack(fill="both", expand=True, padx=30, pady=30)
 
-        ctk.CTkLabel(form, text="Add New Expense", font=ctk.CTkFont(size=22, weight="bold")).pack(pady=(10, 25))
+        ctk.CTkLabel(form, text="Add New Expense", font=ctk.CTkFont(size=22, weight="bold")).pack(pady=(10, 25)) # nosaukums
 
-        # Create form fields
+        # datuma lauks (pec noklusejuma sodien)
         date_entry = self._create_form_field(form, "Date (YYYY-MM-DD):", ctk.CTkEntry)
         date_entry.insert(0, datetime.now().strftime("%Y-%m-%d"))
 
+        # kategorijas dropdown
         category_dropdown = self._create_form_field(form, "Category:", ctk.CTkComboBox, values=self.CATEGORIES, state="readonly")
         category_dropdown.set(self.CATEGORIES[0])
 
+        # summa un apraksts
         amount_entry = self._create_form_field(form, "Amount:", ctk.CTkEntry)
         desc_entry = self._create_form_field(form, "Description (optional):", ctk.CTkEntry)
 
+        # statusa label
         status = ctk.CTkLabel(form, text="", text_color="green")
         status.pack(pady=10)
 
-        def submit():
+        def submit(): # iesniegsanas apstradatajs
             try:
                 date = date_entry.get().strip()
                 category = category_dropdown.get().strip()
                 amount = float(amount_entry.get().strip())
                 description = desc_entry.get().strip()
 
-                if not date or not category or amount <= 0:
+                if not date or not category or amount <= 0: # valide ievades datus
                     raise ValueError("Invalid input")
 
                 datetime.strptime(date, "%Y-%m-%d")
+
+                # saglaba izdevumus
                 self.tracker.add_expense(date, category, amount, description or "")
                 status.configure(text="Added successfully!", text_color="green")
-                dialog.after(1000, dialog.destroy)
+
+                dialog.after(1000, dialog.destroy) # aizver dialoglodzinu pec isas aizkaves
+
+                # atsvaidzina UI
                 self._refresh_expenses()
                 self._refresh_analytics()
+
             except Exception as e:
                 status.configure(text=f"Error: {str(e)}", text_color="red")
 
-        # Buttons
+        # pogas
         buttons = ctk.CTkFrame(form, fg_color="white")
         buttons.pack(pady=10)
+
         ctk.CTkButton(buttons, text="Add", command=submit, fg_color="#2ecc71", hover_color="#27ae60", width=150, height=40).pack(side="left", padx=10)
         ctk.CTkButton(buttons, text="Cancel", command=dialog.destroy, fg_color="#95a5a6", hover_color="#7f8c8d", width=150, height=40).pack(side="left", padx=10)
 
-    def _create_form_field(self, parent, label_text, widget_class, **kwargs):
+    def _create_form_field(self, parent, label_text, widget_class, **kwargs): # paligmetode labeled formas lauku izveidei
         ctk.CTkLabel(parent, text=label_text).pack(anchor="w", padx=20, pady=(0, 5))
         widget = widget_class(parent, width=400, height=35, **kwargs)
         widget.pack(padx=20, pady=(0, 15))
         return widget
 
-    def _setup_analytics_tab(self):
+    def _setup_analytics_tab(self): # izveido analitikas cilni
         container = ctk.CTkFrame(self.analytics_tab, fg_color="white")
         container.pack(fill="both", expand=True, padx=20, pady=20)
 
         ctk.CTkLabel(container, text="Expense Analytics", font=ctk.CTkFont(size=24, weight="bold")).pack(pady=(10, 20))
 
-        # Stats
-        self._create_stats_section(container)
+        self._create_stats_section(container) # statistikas sadala
 
-        # Charts
+        # diagrammu cilnes
         chart_tabs = ctk.CTkTabview(container, fg_color="white")
         chart_tabs.pack(fill="both", expand=True)
 
@@ -285,12 +300,12 @@ class ExpenseTrackerGUI:
                 widget.destroy()
             self._create_chart(chart_type, tab)
 
-    def run(self):
+    def run(self): # palaiz lietojumprogrammu
         self.root.mainloop()
 
-def main():
+def main(): # entry punkts
     app = ExpenseTrackerGUI()
     app.run()
 
-if __name__ == "__main__":
+if __name__ == "__main__": # palaiz lietotni, ja fails tiek izpildits tiesi
     main()
