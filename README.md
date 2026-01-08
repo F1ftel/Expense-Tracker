@@ -54,7 +54,6 @@ Expense Tracker/
 ├── expense.py              # Expense data model & validation
 ├── tracker.py              # Data storage & management
 ├── gui.py                  # Graphical user interface
-├── main.py                 # Application entry point
 │
 ├── requirements.txt        # Required Python packages
 └── README.md               # Project documentation
