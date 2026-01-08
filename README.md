@@ -67,7 +67,7 @@ CSV - persistent data storage
 
 How to Run the Application: 
 1) Install dependencies: pip install -r requirements.txt 
-2) Start the application: python main.py
+2) Start the application: python gui.py
 
 Design & Architecture: 
 1) Object‑Oriented Design: 
